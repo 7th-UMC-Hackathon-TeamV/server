@@ -16,6 +16,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @Tag(name = "뉴스")
 @RestController
 @RequiredArgsConstructor
@@ -76,5 +78,25 @@ public class NewsController {
     public ApiResponse<Void> deleteNews(@PathVariable("groupKey") String groupKey, @PathVariable("memberId") Long memberId, @PathVariable("newsId") Long newsId) {
         newsService.removeNews(groupKey, memberId, newsId);
         return ApiResponse.onSuccess(null);
+    }
+
+    /**
+     * 특정 그룹의 속보 뉴스 목록 조회 API
+     */
+    @GetMapping("/{groupKey}/breaking")
+    public ApiResponse<List<NewsResponseDTO.NewsReadResponseDTO>> getBreakingNewsByGroupKey(
+            @PathVariable("groupKey") String groupKey) {
+        List<NewsResponseDTO.NewsReadResponseDTO> breakingNews = newsService.getBreakingNewsByGroupKey(groupKey);
+        return ApiResponse.onSuccess(breakingNews);
+    }
+
+    /**
+     * 특정 그룹의 일반 뉴스 목록 조회 API
+     */
+    @GetMapping("/{groupKey}/regular")
+    public ApiResponse<List<NewsResponseDTO.NewsReadResponseDTO>> getRegularNewsByGroupKey(
+            @PathVariable("groupKey") String groupKey) {
+        List<NewsResponseDTO.NewsReadResponseDTO> regularNews = newsService.getRegularNewsByGroupKey(groupKey);
+        return ApiResponse.onSuccess(regularNews);
     }
 }

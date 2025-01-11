@@ -21,5 +21,11 @@ public interface NewsRepository extends JpaRepository<News,Long> {
     // 뉴스 작성자 목록 중복 제거 후 반환
     @Query("SELECT DISTINCT n.member FROM News n WHERE n.member.teamGroup.groupKey = :groupKey")
     List<Member> findDistinctMembersByGroupKey(@Param("groupKey") String groupKey);
+
+    // 특정 그룹의 속보 뉴스 조회
+    List<News> findByTeamGroupAndIsBreakingNewsTrue(TeamGroup teamGroup);
+
+    // 특정 그룹의 일반 뉴스 조회
+    List<News> findByTeamGroupAndIsBreakingNewsFalse(TeamGroup teamGroup);
 }
 

@@ -15,6 +15,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -86,5 +88,40 @@ public class NewsService {
         newsRepository.deleteById(news.getId());
 
         return null;
+    }
+
+    /**
+     * 특정 그룹의 속보 뉴스 목록 조회
+     */
+    public List<NewsResponseDTO.NewsReadResponseDTO> getBreakingNewsByGroupKey(String groupKey) {
+        //그룹 조회
+        TeamGroup teamGroup = groupRepository.findByGroupKey(groupKey)
+                .orElseThrow(() -> new RuntimeException("그룹키가 없습니다."));
+
+        //속보 뉴스 조회
+        List<News> breakingNewsList = newsRepository.findByTeamGroupAndIsBreakingNewsTrue(teamGroup);
+
+        // News -> NewReadResponseDTO 변환
+        return breakingNewsList.stream()
+                .map(NewsResponseDTO.NewsReadResponseDTO::from)
+                .toList();
+    }
+
+
+    /**
+     * 특정 그룹의 일반 뉴스 목록 조회
+     */
+    public List<NewsResponseDTO.NewsReadResponseDTO> getRegularNewsByGroupKey(String groupKey) {
+        //그룹 조회
+        TeamGroup teamGroup = groupRepository.findByGroupKey(groupKey)
+                .orElseThrow(() -> new RuntimeException("그룹키가 없습니다."));
+
+        //일반 뉴스 조회
+        List<News> regularNewsList = newsRepository.findByTeamGroupAndIsBreakingNewsFalse(teamGroup);
+
+        // News -> NewReadResponseDTO 변환
+        return regularNewsList.stream()
+                .map(NewsResponseDTO.NewsReadResponseDTO::from)
+                .toList();
     }
 }
