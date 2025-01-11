@@ -9,11 +9,20 @@ import banban.springboot.domain.entity.TeamGroup;
 import banban.springboot.repository.GroupRepository;
 import banban.springboot.repository.MemberRepository;
 import banban.springboot.repository.NewsRepository;
+import banban.springboot.web.controller.NewsTestController;
 import banban.springboot.web.dto.request.NewsRequestDTO;
 import banban.springboot.web.dto.response.NewsResponseDTO;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDateTime;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import java.util.List;
 
@@ -24,6 +33,7 @@ public class NewsService {
     private final NewsRepository newsRepository;
     private final MemberRepository memberRepository;
     private final GroupRepository groupRepository;
+    //private final Environment environment;
 
     @Transactional
     public NewsResponseDTO.NewsCreateResponseDTO createNews(String groupKey, Long memberId, NewsRequestDTO newsRequestDTO) {
@@ -43,7 +53,8 @@ public class NewsService {
                 .isBreakingNews(newsRequestDTO.isBreakingNews())
                 .likes(0)
                 .newsCategories(newsRequestDTO.getNewsCategories())
-                .createdAt(newsRequestDTO.getCreatedAt())
+                //.createdAt(newsRequestDTO.getCreatedAt())
+                .createdAt(getCurrentTime())
                 .build();
 
         news = newsRepository.save(news);
@@ -123,5 +134,72 @@ public class NewsService {
         return regularNewsList.stream()
                 .map(NewsResponseDTO.NewsReadResponseDTO::from)
                 .toList();
+    }
+
+//    private LocalDateTime getCurrentTime() {
+//        if (isTestMode()) {
+//            return NewsTestController.getMockCurrentTime();
+//        }
+//        return LocalDateTime.now();
+//    }
+
+//    private boolean isTestMode() {
+//        return Arrays.asList(environment.getActiveProfiles()).contains("test");
+//    }
+
+    private LocalDateTime getCurrentTime() {
+        return NewsTestController.getMockCurrentTime();  // 항상 테스트 시간 반환
+    }
+
+    public List<NewsResponseDTO.NewsTodayResponseDTO> getTodayNews(String groupKey, Long memberId) {
+        // 그룹과 멤버 존재 확인
+        TeamGroup teamGroup = groupRepository.findByGroupKey(groupKey)
+                .orElseThrow(() -> new GeneralException(ErrorStatus.TEAMGROUP_NOT_FOUND));
+
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new GeneralException(ErrorStatus.MEMBER_NOT_FOUND));
+
+        //LocalDateTime now = LocalDateTime.now();
+        LocalDateTime now = getCurrentTime();
+//        LocalDateTime startOfDay = now.toLocalDate().atStartOfDay();
+        LocalDateTime startOfDay = now.minusDays(1).withHour(18).withMinute(0).withSecond(0);
+        LocalDateTime endOfToday = now.toLocalDate().atTime(17, 59, 59);
+
+        List<News> todayNews = newsRepository.findByTeamGroupAndCreatedAtBetween(
+                teamGroup, startOfDay, endOfToday);
+
+        return todayNews.stream()
+                .map(NewsResponseDTO.NewsTodayResponseDTO::from)
+                .collect(Collectors.toList());
+    }
+
+    public List<NewsResponseDTO.NewsYesterdayResponseDTO> getYesterdayNews(String groupKey, Long memberId) {
+        // 그룹과 멤버 존재 확인
+        TeamGroup teamGroup = groupRepository.findByGroupKey(groupKey)
+                .orElseThrow(() -> new GeneralException(ErrorStatus.TEAMGROUP_NOT_FOUND));
+
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new GeneralException(ErrorStatus.MEMBER_NOT_FOUND));
+
+        //LocalDateTime now = LocalDateTime.now();
+        LocalDateTime now = getCurrentTime();
+        LocalDateTime twoYesterdayAt6PM = now.minusDays(2).withHour(18).withMinute(0).withSecond(0);
+        LocalDateTime yesterdayAt6PM = now.minusDays(1).withHour(17).withMinute(59).withSecond(59);
+
+        List<News> yesterdayNews = newsRepository.findByTeamGroupAndCreatedAtBetween(
+                teamGroup, twoYesterdayAt6PM, yesterdayAt6PM);
+
+        return yesterdayNews.stream()
+                .map(NewsResponseDTO.NewsYesterdayResponseDTO::from)
+                .collect(Collectors.toList());
+    }
+
+    @Scheduled(cron = "0 0 18 * * *")
+    @Transactional
+    public void deleteOldNews() {
+        LocalDateTime now = getCurrentTime(); // 수정된 부분
+        LocalDateTime yesterdayAt6PM = now.minusDays(1)
+                .withHour(18).withMinute(0).withSecond(0);
+        newsRepository.deleteByCreatedAtBefore(yesterdayAt6PM);
     }
 }
