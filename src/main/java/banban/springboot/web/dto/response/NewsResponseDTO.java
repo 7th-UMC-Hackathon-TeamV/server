@@ -19,9 +19,9 @@ public class NewsResponseDTO {
         private Long newsId;
         private String headline;
         private String content;
-        private LocalDateTime createdAt;
-        //private List<MultipartFile> images;
+        private String images;
         private boolean isBreakingNews;
+        private LocalDateTime createdAt;
 
         public static NewsCreateResponseDTO from(News news) {
             return NewsCreateResponseDTO.builder()
@@ -29,10 +29,37 @@ public class NewsResponseDTO {
                     .headline(news.getHeadline())
                     .content(news.getContent())
                     .isBreakingNews(news.isBreakingNews())
+                    .images(news.getThumbnail_URL())
                     .createdAt(news.getCreatedAt())
                     .build();
         }
     }
+
+    @Getter
+    @Setter
+    @NoArgsConstructor
+    @Builder
+    @AllArgsConstructor
+    public static class NewsReadResponseDTO {
+        private Long newsId;
+        private String headline;
+        private String content;
+        private String username;
+        private boolean isBreakingNews;
+        private String images;
+
+        public static NewsReadResponseDTO from(News news) {
+            return NewsReadResponseDTO.builder()
+                    .newsId(news.getId())
+                    .headline(news.getHeadline())
+                    .content(news.getContent())
+                    .username(news.getMember().getUsername())
+                    .isBreakingNews(news.isBreakingNews())
+                    .images(news.getThumbnail_URL())
+                    .build();
+        }
+    }
+
 
     @Getter
     @Setter
@@ -80,29 +107,6 @@ public class NewsResponseDTO {
                     .isBreakingNews(news.isBreakingNews())
                     .likes(news.getLikes())
                     .createdAt(news.getCreatedAt())
-                    .build();
-        }
-    }
-
-    @Getter
-    @Setter
-    @NoArgsConstructor
-    @Builder
-    @AllArgsConstructor
-    public static class NewsReadResponseDTO {
-        private Long newsId;
-        private String headline;
-        private String content;
-        private String username;
-        private boolean isBreakingNews;
-
-        public static NewsReadResponseDTO from(News news) {
-            return NewsReadResponseDTO.builder()
-                    .newsId(news.getId())
-                    .headline(news.getHeadline())
-                    .content(news.getContent())
-                    .username(news.getMember().getUsername())
-                    .isBreakingNews(news.isBreakingNews())
                     .build();
         }
     }

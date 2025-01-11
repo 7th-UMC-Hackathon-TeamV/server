@@ -7,14 +7,17 @@ import banban.springboot.web.dto.request.NewsRequestDTO;
 import banban.springboot.web.dto.response.NewsResponseDTO;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.MediaType;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -28,9 +31,11 @@ public class NewsController {
     private final NewsService newsService;
 
     @Operation(summary = "뉴스 생성")
-    @PostMapping("/{groupKey}/users/news/{memberId}")
-    public ApiResponse<NewsResponseDTO.NewsCreateResponseDTO> createNews(@PathVariable String groupKey, @PathVariable Long memberId, @Valid @RequestBody NewsRequestDTO newsRequestDTO) {
-        NewsResponseDTO.NewsCreateResponseDTO news = newsService.createNews(groupKey, memberId, newsRequestDTO);
+    @PostMapping(value = "/{groupKey}/users/news/{memberId}", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
+    public ApiResponse<NewsResponseDTO.NewsCreateResponseDTO> createNews(@PathVariable String groupKey, @PathVariable Long memberId, @Parameter(content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE))
+    @Valid @RequestPart("newsRequestDTO") NewsRequestDTO newsRequestDTO,
+@RequestPart("thumbnail_img") MultipartFile thumbnail_img) {
+        NewsResponseDTO.NewsCreateResponseDTO news = newsService.createNews(groupKey, memberId, newsRequestDTO, thumbnail_img);
         return ApiResponse.onSuccess(news);
     }
     // 뉴스 공감 누르기
@@ -98,31 +103,5 @@ public class NewsController {
             @PathVariable("groupKey") String groupKey) {
         List<NewsResponseDTO.NewsReadResponseDTO> regularNews = newsService.getRegularNewsByGroupKey(groupKey);
         return ApiResponse.onSuccess(regularNews);
-    }
-
-    @GetMapping("/{groupKey}/users/news/today/{memberId}")
-    @Operation(summary = "오늘 공개 예정 뉴스글 조회")
-    @Parameters({
-            @Parameter(name = "groupKey", description = "그룹 키"),
-            @Parameter(name = "memberId", description = "멤버 ID")
-    })
-    public ApiResponse<List<NewsResponseDTO.NewsTodayResponseDTO>> getTodayNews(
-            @PathVariable String groupKey,
-            @PathVariable Long memberId) {
-        List<NewsResponseDTO.NewsTodayResponseDTO> todayNews = newsService.getTodayNews(groupKey, memberId);
-        return ApiResponse.onSuccess(todayNews);
-    }
-
-    @GetMapping("/{groupKey}/users/news/yesterday/{memberId}")
-    @Operation(summary = "어제 공개된 뉴스글 조회")
-    @Parameters({
-            @Parameter(name = "groupKey", description = "그룹 키"),
-            @Parameter(name = "memberId", description = "멤버 ID")
-    })
-    public ApiResponse<List<NewsResponseDTO.NewsYesterdayResponseDTO>> getYesterdayNews(
-            @PathVariable String groupKey,
-            @PathVariable Long memberId) {
-        List<NewsResponseDTO.NewsYesterdayResponseDTO> yesterdayNews = newsService.getYesterdayNews(groupKey, memberId);
-        return ApiResponse.onSuccess(yesterdayNews);
     }
 }
