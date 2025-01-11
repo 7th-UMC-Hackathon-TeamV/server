@@ -24,6 +24,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -68,6 +70,70 @@ public class NewsService {
         existNews.setLikes(likes_count);
 
         return newsRepository.save(existNews);
+    }
+
+    @Transactional
+    public NewsResponseDTO.NewsReadResponseDTO readNews(String groupKey, Long newsId) {
+
+        TeamGroup teamGroup = groupRepository.findByGroupKey(groupKey)
+                .orElseThrow(() -> new GeneralException(ErrorStatus.TEAMGROUP_NOT_FOUND));
+
+        News news = newsRepository.findByTeamGroupAndId(teamGroup, newsId)
+                .orElseThrow(() -> new GeneralException(ErrorStatus.NEWS_NOT_EXIST_FOUND));
+
+        return NewsResponseDTO.NewsReadResponseDTO.from(news);
+    }
+
+    @Transactional
+    public Void removeNews(String groupKey, Long memberId, Long newsId) {
+
+        TeamGroup teamGroup = groupRepository.findByGroupKey(groupKey)
+                .orElseThrow(() -> new GeneralException(ErrorStatus.TEAMGROUP_NOT_FOUND));
+
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new GeneralException(ErrorStatus.MEMBER_NOT_FOUND));
+
+        News news = newsRepository.findByTeamGroupAndMemberAndId(teamGroup, member, newsId)
+                .orElseThrow(() -> new GeneralException(ErrorStatus.NEWS_NOT_EXIST_FOUND));
+
+        newsRepository.deleteById(news.getId());
+
+        return null;
+    }
+
+    /**
+     * 특정 그룹의 속보 뉴스 목록 조회
+     */
+    public List<NewsResponseDTO.NewsReadResponseDTO> getBreakingNewsByGroupKey(String groupKey) {
+        //그룹 조회
+        TeamGroup teamGroup = groupRepository.findByGroupKey(groupKey)
+                .orElseThrow(() -> new RuntimeException("그룹키가 없습니다."));
+
+        //속보 뉴스 조회
+        List<News> breakingNewsList = newsRepository.findByTeamGroupAndIsBreakingNewsTrue(teamGroup);
+
+        // News -> NewReadResponseDTO 변환
+        return breakingNewsList.stream()
+                .map(NewsResponseDTO.NewsReadResponseDTO::from)
+                .toList();
+    }
+
+
+    /**
+     * 특정 그룹의 일반 뉴스 목록 조회
+     */
+    public List<NewsResponseDTO.NewsReadResponseDTO> getRegularNewsByGroupKey(String groupKey) {
+        //그룹 조회
+        TeamGroup teamGroup = groupRepository.findByGroupKey(groupKey)
+                .orElseThrow(() -> new RuntimeException("그룹키가 없습니다."));
+
+        //일반 뉴스 조회
+        List<News> regularNewsList = newsRepository.findByTeamGroupAndIsBreakingNewsFalse(teamGroup);
+
+        // News -> NewReadResponseDTO 변환
+        return regularNewsList.stream()
+                .map(NewsResponseDTO.NewsReadResponseDTO::from)
+                .toList();
     }
 
 //    private LocalDateTime getCurrentTime() {

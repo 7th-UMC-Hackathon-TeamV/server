@@ -26,4 +26,8 @@ public class Member {
 
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
     private List<News> NewsList = new ArrayList<>();
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "teamGroup_id", nullable = false)
+    private TeamGroup teamGroup;
 }

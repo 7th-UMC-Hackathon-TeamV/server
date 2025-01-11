@@ -49,6 +49,57 @@ public class NewsController {
         return ApiResponse.onSuccess(null);
     }
 
+    // 뉴스 상세 보기
+    @GetMapping("/{groupKey}/news/{newsId}")
+    @Operation(summary = "뉴스 상세 보기 API",description = "뉴스 상세 보는 API입니다.")
+    @ApiResponses({
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "COMMON200",description = "OK, 성공"),
+    })
+    @Parameters({
+            @Parameter(name = "groupKey", description = "그룹키, path variable 입니다!"),
+            @Parameter(name = "newsId", description = "뉴스글의 ID, path variable 입니다!"),
+    })
+    public ApiResponse<NewsResponseDTO.NewsReadResponseDTO> createNews(@PathVariable("groupKey") String groupKey, @PathVariable("newsId") Long newsId) {
+        NewsResponseDTO.NewsReadResponseDTO news = newsService.readNews(groupKey, newsId);
+        return ApiResponse.onSuccess(news);
+    }
+
+    // 내가 작성한 뉴스 삭제
+    @DeleteMapping("/{groupKey}/users/news/{memberId}/{newsId}")
+    @Operation(summary = "내가 작성한 뉴스 삭제하기 API",description = "내가 작성한 뉴스 삭제하는 API입니다.")
+    @ApiResponses({
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "COMMON200",description = "OK, 성공"),
+    })
+    @Parameters({
+            @Parameter(name = "groupKey", description = "그룹키, path variable 입니다!"),
+            @Parameter(name = "memberId", description = "사용자의 ID, path variable 입니다!"),
+            @Parameter(name = "newsId", description = "뉴스글의 ID, path variable 입니다!"),
+    })
+    public ApiResponse<Void> deleteNews(@PathVariable("groupKey") String groupKey, @PathVariable("memberId") Long memberId, @PathVariable("newsId") Long newsId) {
+        newsService.removeNews(groupKey, memberId, newsId);
+        return ApiResponse.onSuccess(null);
+    }
+
+    /**
+     * 특정 그룹의 속보 뉴스 목록 조회 API
+     */
+    @GetMapping("/{groupKey}/breaking")
+    public ApiResponse<List<NewsResponseDTO.NewsReadResponseDTO>> getBreakingNewsByGroupKey(
+            @PathVariable("groupKey") String groupKey) {
+        List<NewsResponseDTO.NewsReadResponseDTO> breakingNews = newsService.getBreakingNewsByGroupKey(groupKey);
+        return ApiResponse.onSuccess(breakingNews);
+    }
+
+    /**
+     * 특정 그룹의 일반 뉴스 목록 조회 API
+     */
+    @GetMapping("/{groupKey}/regular")
+    public ApiResponse<List<NewsResponseDTO.NewsReadResponseDTO>> getRegularNewsByGroupKey(
+            @PathVariable("groupKey") String groupKey) {
+        List<NewsResponseDTO.NewsReadResponseDTO> regularNews = newsService.getRegularNewsByGroupKey(groupKey);
+        return ApiResponse.onSuccess(regularNews);
+    }
+
     @GetMapping("/{groupKey}/users/news/today/{memberId}")
     @Operation(summary = "오늘 공개 예정 뉴스글 조회")
     @Parameters({
