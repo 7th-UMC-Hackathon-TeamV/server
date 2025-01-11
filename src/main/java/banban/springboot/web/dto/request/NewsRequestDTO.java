@@ -31,5 +31,5 @@ public class NewsRequestDTO {
     @NotNull(message = "긍정인지 부정인지 작성해주세요")
     private NewsCategories newsCategories;
 
-    private LocalDateTime createdAt = LocalDateTime.now();
+//    private LocalDateTime createdAt = LocalDateTime.now();
 }

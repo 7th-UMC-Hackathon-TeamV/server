@@ -61,8 +61,8 @@ public class NewsService {
                 .isBreakingNews(newsRequestDTO.isBreakingNews())
                 .likes(0)
                 .newsCategories(newsRequestDTO.getNewsCategories())
-                .createdAt(newsRequestDTO.getCreatedAt())
                 .thumbnail_URL(pictureUrl)
+                .createdAt(getCurrentTime())
                 .build();
 
         news = newsRepository.save(news);
