@@ -70,4 +70,21 @@ public class NewsService {
 
         return NewsResponseDTO.NewsReadResponseDTO.from(news);
     }
+
+    @Transactional
+    public Void removeNews(String groupKey, Long memberId, Long newsId) {
+
+        TeamGroup teamGroup = groupRepository.findByGroupKey(groupKey)
+                .orElseThrow(() -> new GeneralException(ErrorStatus.TEAMGROUP_NOT_FOUND));
+
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new GeneralException(ErrorStatus.MEMBER_NOT_FOUND));
+
+        News news = newsRepository.findByTeamGroupAndMemberAndId(teamGroup, member, newsId)
+                .orElseThrow(() -> new GeneralException(ErrorStatus.NEWS_NOT_EXIST_FOUND));
+
+        newsRepository.deleteById(news.getId());
+
+        return null;
+    }
 }
