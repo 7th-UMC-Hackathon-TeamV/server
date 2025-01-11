@@ -19,7 +19,7 @@ public class User {
     private Long id;
 
     @Column(nullable = false, length = 20)
-    private String userid;
+    private String name;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<News> NewsList = new ArrayList<>();

@@ -9,4 +9,5 @@ public class NewsService {
 
     @Autowired
     private NewsRepository newsRepository;
+
 }

@@ -11,7 +11,7 @@ import lombok.Setter;
 public class UserRequestDTO {
     private String id;
     @Max(20)
-    private String userId;
+    private String username;
 
     @Max(20)
     private String password;
