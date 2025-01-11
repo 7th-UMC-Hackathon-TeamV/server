@@ -6,6 +6,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.ColumnDefault;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
@@ -24,10 +25,11 @@ public class NewsRequestDTO {
 
     //private List<MultipartFile> images; // 사용자가 업로드한 이미지
 
+    @ColumnDefault("false")
     private boolean isBreakingNews; // 속보 여부
 
     @NotNull(message = "긍정인지 부정인지 작성해주세요")
     private NewsCategories newsCategories;
 
-    private LocalDateTime createdAt = LocalDateTime.now();
+    //private LocalDateTime createdAt = LocalDateTime.now();
 }

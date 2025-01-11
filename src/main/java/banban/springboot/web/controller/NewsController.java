@@ -16,6 +16,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @Tag(name = "뉴스")
 @RestController
 @RequiredArgsConstructor
@@ -45,5 +47,31 @@ public class NewsController {
         newsService.addNewsLike(newsId);
 
         return ApiResponse.onSuccess(null);
+    }
+
+    @GetMapping("/{groupKey}/users/news/today/{memberId}")
+    @Operation(summary = "오늘 공개 예정 뉴스글 조회")
+    @Parameters({
+            @Parameter(name = "groupKey", description = "그룹 키"),
+            @Parameter(name = "memberId", description = "멤버 ID")
+    })
+    public ApiResponse<List<NewsResponseDTO.NewsTodayResponseDTO>> getTodayNews(
+            @PathVariable String groupKey,
+            @PathVariable Long memberId) {
+        List<NewsResponseDTO.NewsTodayResponseDTO> todayNews = newsService.getTodayNews(groupKey, memberId);
+        return ApiResponse.onSuccess(todayNews);
+    }
+
+    @GetMapping("/{groupKey}/users/news/yesterday/{memberId}")
+    @Operation(summary = "어제 공개된 뉴스글 조회")
+    @Parameters({
+            @Parameter(name = "groupKey", description = "그룹 키"),
+            @Parameter(name = "memberId", description = "멤버 ID")
+    })
+    public ApiResponse<List<NewsResponseDTO.NewsYesterdayResponseDTO>> getYesterdayNews(
+            @PathVariable String groupKey,
+            @PathVariable Long memberId) {
+        List<NewsResponseDTO.NewsYesterdayResponseDTO> yesterdayNews = newsService.getYesterdayNews(groupKey, memberId);
+        return ApiResponse.onSuccess(yesterdayNews);
     }
 }
