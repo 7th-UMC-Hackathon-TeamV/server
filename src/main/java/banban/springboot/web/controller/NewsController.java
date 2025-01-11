@@ -130,4 +130,15 @@ public class NewsController {
         List<NewsResponseDTO.NewsYesterdayResponseDTO> yesterdayNews = newsService.getYesterdayNews(groupKey, memberId);
         return ApiResponse.onSuccess(yesterdayNews);
     }
+
+    @GetMapping("/{groupKey}/news/yesterday-today")
+    @Operation(summary = "어제 18시부터 오늘 18시 전까지 뉴스 조회")
+    @Parameters({
+            @Parameter(name = "groupKey", description = "그룹 키")
+    })
+    public ApiResponse<List<NewsResponseDTO.NewsReadResponseDTO>> getNewsBetweenYesterday18ToToday18(
+            @PathVariable String groupKey) {
+        List<NewsResponseDTO.NewsReadResponseDTO> newsList = newsService.getNewsBetweenYesterday18ToToday18(groupKey);
+        return ApiResponse.onSuccess(newsList);
+    }
 }

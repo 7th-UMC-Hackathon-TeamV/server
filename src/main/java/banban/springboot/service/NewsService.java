@@ -212,4 +212,28 @@ public class NewsService {
         LocalDateTime yesterdayAt6PM = now.minusDays(1).withHour(17).withMinute(59).withSecond(59);
         newsRepository.deleteByCreatedAtBetween(twoYesterdayAt6PM, yesterdayAt6PM);
     }
+
+    /***
+     * 어제 18시부터 작성한 글에서 오늘 18시전까지 작성한 글 목록 조회
+     */
+    public List<NewsResponseDTO.NewsReadResponseDTO> getNewsBetweenYesterday18ToToday18(String groupKey) {
+        // 그룹 확인
+        TeamGroup teamGroup = groupRepository.findByGroupKey(groupKey)
+                .orElseThrow(() -> new GeneralException(ErrorStatus.TEAMGROUP_NOT_FOUND));
+
+        // 현재 시간
+        LocalDateTime now = getCurrentTime();
+
+        // 어제 18시부터 오늘 18시전까지
+        LocalDateTime yesterdayAt6PM = now.minusDays(1).withHour(18).withMinute(0).withSecond(0);
+        LocalDateTime todayAt6PM = now.withHour(17).withMinute(59).withSecond(59);
+
+        // 뉴스 조회
+        List<News> newsList = newsRepository.findByTeamGroupAndCreatedAtBetween(teamGroup, yesterdayAt6PM, todayAt6PM);
+
+        // 뉴스 -> DTO 변환
+        return newsList.stream()
+                .map(NewsResponseDTO.NewsReadResponseDTO::from)
+                .toList();
+    }
 }
