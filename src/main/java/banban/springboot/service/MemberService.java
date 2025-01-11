@@ -50,6 +50,7 @@ public class MemberService {
         return MemberResponseDTO.builder()
                 .id(member.getId())
                 .username(member.getUsername())
+                .teamGroup(teamGroup)
                 .build();
     }
 
@@ -64,6 +65,7 @@ public class MemberService {
         return MemberResponseDTO.builder()
                 .id(member.getId())
                 .username(member.getUsername())
+                .teamGroup(teamGroup)
                 .build();
     }
 }

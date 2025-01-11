@@ -34,7 +34,7 @@ public enum ErrorStatus implements BaseErrorCode {
 
     // News Error
     NEWS_NOT_EXIST_FOUND(HttpStatus.BAD_REQUEST, "NEWS4001", "뉴스가 없습니다."),
-    
+
     //Store Error
     STORE_NOT_FOUND(HttpStatus.NOT_FOUND, "STORE_4001","가게가 없습니다.");
 
