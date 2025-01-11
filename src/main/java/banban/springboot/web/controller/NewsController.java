@@ -39,17 +39,19 @@ public class NewsController {
         return ApiResponse.onSuccess(news);
     }
     // 뉴스 공감 누르기
-    @PostMapping("/news/{newsId}/likes")
+    @PostMapping("/{groupKey}/news/{newsId}/{memberId}/likes")
     @Operation(summary = "공감 누르기 API",description = "뉴스에 공감 누르는 API입니다.")
     @ApiResponses({
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "COMMON200",description = "OK, 성공"),
     })
     @Parameters({
-            @Parameter(name = "newsId", description = "뉴스글의 ID, path variable 입니다!")
+            @Parameter(name = "groupKey", description = "그룹 코드(키), path variable 입니다!"),
+            @Parameter(name = "newsId", description = "뉴스글의 ID, path variable 입니다!"),
+            @Parameter(name = "memberId", description = "사용자의 ID, path variable 입니다!")
     })
-    public ApiResponse<Void> updatePromotionProject(@PathVariable(name = "newsId") Long newsId){
+    public ApiResponse<Void> updatePromotionProject(@PathVariable(name = "groupKey") String groupKey, @PathVariable(name = "newsId") Long newsId, @PathVariable(name = "memberId") Long memberId){
 
-        newsService.addNewsLike(newsId);
+        newsService.addNewsLike(groupKey, newsId, memberId);
 
         return ApiResponse.onSuccess(null);
     }
