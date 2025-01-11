@@ -1,0 +1,4 @@
+package banban.springboot.web.dto.request;
+
+public class GroupRequestDTO {
+}

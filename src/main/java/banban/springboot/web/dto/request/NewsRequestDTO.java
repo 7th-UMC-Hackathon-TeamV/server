@@ -1,7 +1,6 @@
 package banban.springboot.web.dto.request;
 
 import banban.springboot.domain.enums.NewsCategories;
-import jakarta.persistence.GeneratedValue;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;

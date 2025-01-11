@@ -2,6 +2,7 @@ package banban.springboot.service;
 
 import banban.springboot.apiPayload.code.status.ErrorStatus;
 import banban.springboot.apiPayload.exception.GeneralException;
+import banban.springboot.apiPayload.exception.handler.NewsHandler;
 import banban.springboot.domain.entity.Member;
 import banban.springboot.domain.entity.News;
 import banban.springboot.repository.MemberRepository;
@@ -9,6 +10,7 @@ import banban.springboot.repository.NewsRepository;
 import banban.springboot.web.dto.request.NewsRequestDTO;
 import banban.springboot.web.dto.response.NewsResponseDTO;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -38,5 +40,16 @@ public class NewsService {
 
         news = newsRepository.save(news);
         return NewsResponseDTO.NewsCreateResponseDTO.from(news);
+    }
+    // 뉴스 공감 누르기
+    public News addNewsLike(Long newsId){
+        News existNews = newsRepository.findById(newsId)
+                .orElseThrow(() -> new NewsHandler(ErrorStatus.NEWS_NOT_EXIST_FOUND));
+
+        Integer likes_count = existNews.getLikes() + 1;
+
+        existNews.setLikes(likes_count);
+
+        return newsRepository.save(existNews);
     }
 }
