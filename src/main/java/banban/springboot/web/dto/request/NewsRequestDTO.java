@@ -23,7 +23,7 @@ public class NewsRequestDTO {
     @Size(max = 1000, message = "뉴스 본문은 최대 1000자입니다.")
     private String content;
 
-    //private List<MultipartFile> images; // 사용자가 업로드한 이미지
+    private String images; // 사용자가 업로드한 이미지
 
     @ColumnDefault("false")
     private boolean isBreakingNews; // 속보 여부

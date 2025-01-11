@@ -41,8 +41,8 @@ public class News {
     @Column(name = "like_count", nullable = false)
     private Integer likes;
 
-    @ElementCollection
-    private List<String> thumbnail_URL;
+//    @Column(nullable = false)
+    private String thumbnail_URL;
 
     @Column(nullable = false)
     private boolean isBreakingNews;

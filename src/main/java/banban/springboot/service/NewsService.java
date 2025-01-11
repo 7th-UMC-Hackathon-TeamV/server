@@ -9,13 +9,18 @@ import banban.springboot.domain.entity.TeamGroup;
 import banban.springboot.repository.GroupRepository;
 import banban.springboot.repository.MemberRepository;
 import banban.springboot.repository.NewsRepository;
+import banban.springboot.s3.AmazonS3Manager;
+import banban.springboot.s3.Uuid;
+import banban.springboot.s3.UuidRepository;
 import banban.springboot.web.dto.request.NewsRequestDTO;
 import banban.springboot.web.dto.response.NewsResponseDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -24,15 +29,24 @@ public class NewsService {
     private final NewsRepository newsRepository;
     private final MemberRepository memberRepository;
     private final GroupRepository groupRepository;
+    private final AmazonS3Manager s3Manager;
+    private final UuidRepository uuidRepository;
 
     @Transactional
-    public NewsResponseDTO.NewsCreateResponseDTO createNews(String groupKey, Long memberId, NewsRequestDTO newsRequestDTO) {
+    public NewsResponseDTO.NewsCreateResponseDTO createNews(String groupKey, Long memberId, NewsRequestDTO newsRequestDTO, MultipartFile thumbnail_img) {
 
         TeamGroup teamGroup = groupRepository.findByGroupKey(groupKey)
                 .orElseThrow(() -> new GeneralException(ErrorStatus.TEAMGROUP_NOT_FOUND));
 
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new GeneralException(ErrorStatus.MEMBER_NOT_FOUND));
+
+        String uuid = UUID.randomUUID().toString();
+        Uuid savedUuid = uuidRepository.save(Uuid.builder()
+                .uuid(uuid).build());
+
+        String pictureUrl = s3Manager.uploadFile(s3Manager.generateNewsKeyName(savedUuid), thumbnail_img);
+
 
         News news = News.builder()
 
@@ -44,6 +58,7 @@ public class NewsService {
                 .likes(0)
                 .newsCategories(newsRequestDTO.getNewsCategories())
                 .createdAt(newsRequestDTO.getCreatedAt())
+                .thumbnail_URL(pictureUrl)
                 .build();
 
         news = newsRepository.save(news);

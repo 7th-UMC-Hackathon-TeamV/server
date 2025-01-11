@@ -18,7 +18,7 @@ public class NewsResponseDTO {
         private Long newsId;
         private String headline;
         private String content;
-        //private List<MultipartFile> images;
+        private String images;
         private boolean isBreakingNews;
 
         public static NewsCreateResponseDTO from(News news) {
@@ -27,6 +27,7 @@ public class NewsResponseDTO {
                     .headline(news.getHeadline())
                     .content(news.getContent())
                     .isBreakingNews(news.isBreakingNews())
+                    .images(news.getThumbnail_URL())
                     .build();
         }
     }
@@ -42,6 +43,7 @@ public class NewsResponseDTO {
         private String content;
         private String username;
         private boolean isBreakingNews;
+        private String images;
 
         public static NewsReadResponseDTO from(News news) {
             return NewsReadResponseDTO.builder()
@@ -50,6 +52,7 @@ public class NewsResponseDTO {
                     .content(news.getContent())
                     .username(news.getMember().getUsername())
                     .isBreakingNews(news.isBreakingNews())
+                    .images(news.getThumbnail_URL())
                     .build();
         }
     }

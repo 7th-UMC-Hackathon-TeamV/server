@@ -14,7 +14,7 @@ import java.io.IOException;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class AmazonS3Manager {
+public class AmazonS3Manager{
 
     private final AmazonS3 amazonS3;
 
@@ -24,13 +24,18 @@ public class AmazonS3Manager {
 
     public String uploadFile(String keyName, MultipartFile file){
         ObjectMetadata metadata = new ObjectMetadata();
+        metadata.setContentType(file.getContentType());
         metadata.setContentLength(file.getSize());
         try {
             amazonS3.putObject(new PutObjectRequest(amazonConfig.getBucket(), keyName, file.getInputStream(), metadata));
-        } catch (IOException e){
+        }catch (IOException e){
             log.error("error at AmazonS3Manager uploadFile : {}", (Object) e.getStackTrace());
         }
 
         return amazonS3.getUrl(amazonConfig.getBucket(), keyName).toString();
+    }
+
+    public String generateNewsKeyName(Uuid uuid) {
+        return amazonConfig.getNewsPath() + '/' + uuid.getUuid();
     }
 }
