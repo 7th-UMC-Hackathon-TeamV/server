@@ -2,6 +2,7 @@ package banban.springboot.web.dto.response;
 
 import banban.springboot.domain.entity.News;
 import banban.springboot.domain.enums.NewsCategories;
+import banban.springboot.domain.enums.NewsCategories;
 import lombok.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -20,9 +21,9 @@ public class NewsResponseDTO {
         private Long newsId;
         private String headline;
         private String content;
-        private LocalDateTime createdAt;
-        //private List<MultipartFile> images;
+        private String images;
         private boolean isBreakingNews;
+        private LocalDateTime createdAt;
         private NewsCategories newsCategories;
 
         public static NewsCreateResponseDTO from(News news) {
@@ -75,6 +76,7 @@ public class NewsResponseDTO {
         private String content;
         private boolean isBreakingNews;
         private int likes;
+        private String images;
         private LocalDateTime createdAt;
         private NewsCategories newsCategories;
 
@@ -87,6 +89,7 @@ public class NewsResponseDTO {
                     .likes(news.getLikes())
                     .newsCategories(news.getNewsCategories())
                     .createdAt(news.getCreatedAt())
+                    .images(news.getThumbnail_URL())
                     .build();
         }
     }
@@ -101,6 +104,7 @@ public class NewsResponseDTO {
         private String headline;
         private String content;
         private String username;
+        private String images;
         private NewsCategories newsCategories;
         private boolean isBreakingNews;
 
@@ -111,6 +115,7 @@ public class NewsResponseDTO {
                     .content(news.getContent())
                     .username(news.getMember().getUsername())
                     .isBreakingNews(news.isBreakingNews())
+                    .images(news.getThumbnail_URL())
                     .newsCategories(news.getNewsCategories())
                     .build();
         }
