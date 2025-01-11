@@ -20,7 +20,7 @@ public class News {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, length = 30)
+    @Column(nullable = false, length = 20)
     private String headline;;
 
     @Column(nullable = false, length = 1000)
@@ -41,5 +41,9 @@ public class News {
 
     @Column(nullable = false)
     private LocalDateTime createdAt = LocalDateTime.now();
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "member_id",nullable = false)
+    private Member member;
 
 }

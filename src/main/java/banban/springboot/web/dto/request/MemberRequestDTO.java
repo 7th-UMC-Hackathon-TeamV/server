@@ -8,9 +8,9 @@ import lombok.Setter;
 @Getter
 @Setter
 @Builder
-public class UserRequestDTO {
-    private String id;
-    @Max(20)
+public class MemberRequestDTO {
+
+    @Max(10)
     private String username;
 
     @Max(20)

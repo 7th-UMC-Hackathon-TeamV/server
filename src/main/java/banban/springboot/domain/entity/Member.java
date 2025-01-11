@@ -12,15 +12,18 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class User {
+public class Member {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, length = 20)
-    private String name;
+    @Column(nullable = false, length = 10)
+    private String username;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    @Column(nullable = false, length = 20)
+    private String password;
+
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
     private List<News> NewsList = new ArrayList<>();
 }

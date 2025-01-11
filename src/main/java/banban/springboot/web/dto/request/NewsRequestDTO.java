@@ -1,7 +1,6 @@
 package banban.springboot.web.dto.request;
 
 import banban.springboot.domain.enums.NewsCategories;
-import jakarta.persistence.GeneratedValue;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -16,7 +15,7 @@ import java.util.List;
 @Setter
 public class NewsRequestDTO {
     @NotBlank
-    @Size(max = 30, message = "뉴스 헤드라인은 최대 30자입니다.")
+    @Size(max = 20, message = "뉴스 헤드라인은 최대 20자입니다.")
     private String headline;
 
     @NotBlank
