@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.Optional;
 
 public interface GroupRepository extends JpaRepository<TeamGroup, Long> {
+    Optional<TeamGroup> findByGroupKey(String groupKey);
     boolean existsByGroupKey(String groupKey);
     Optional<TeamGroup> findByGroupKey(String groupKey);
 }
