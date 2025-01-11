@@ -69,12 +69,19 @@ public class NewsService {
         return NewsResponseDTO.NewsCreateResponseDTO.from(news);
     }
     // 뉴스 공감 누르기
-    public News addNewsLike(Long newsId){
-        News existNews = newsRepository.findById(newsId)
+    @Transactional
+    public News addNewsLike(String groupKey, Long newsId, Long memberId){
+
+        TeamGroup teamGroup = groupRepository.findByGroupKey(groupKey)
+                .orElseThrow(() -> new NewsHandler(ErrorStatus.TEAMGROUP_NOT_FOUND));
+
+        Member member = memberRepository.findByTeamGroupAndId(teamGroup, memberId)
+                .orElseThrow(() -> new NewsHandler(ErrorStatus.MEMBER_NOT_FOUND));
+
+        News existNews = newsRepository.findByTeamGroupAndId(teamGroup, newsId)
                 .orElseThrow(() -> new NewsHandler(ErrorStatus.NEWS_NOT_EXIST_FOUND));
 
         Integer likes_count = existNews.getLikes() + 1;
-
         existNews.setLikes(likes_count);
 
         return newsRepository.save(existNews);
