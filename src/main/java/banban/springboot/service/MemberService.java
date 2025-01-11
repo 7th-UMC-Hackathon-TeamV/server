@@ -1,6 +1,8 @@
 package banban.springboot.service;
 
 import banban.springboot.domain.entity.Member;
+import banban.springboot.domain.entity.TeamGroup;
+import banban.springboot.repository.GroupRepository;
 import banban.springboot.repository.MemberRepository;
 import banban.springboot.web.dto.request.MemberRequestDTO;
 import banban.springboot.web.dto.response.MemberResponseDTO;
@@ -13,12 +15,17 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class MemberService {
     private final MemberRepository memberRepository;
+    private final GroupRepository groupRepository;
 
-    public MemberResponseDTO createUser(MemberRequestDTO memberRequestDTO) {
+    public MemberResponseDTO createUser(MemberRequestDTO memberRequestDTO, String groupKey) {
+        TeamGroup teamGroup = groupRepository.findByGroupKey(groupKey)
+                .orElseThrow(() -> new RuntimeException("그룹키가 없습니다."));
+
         //DTO to Entity
         Member member = Member.builder()
                 .username(memberRequestDTO.getUsername())
                 .password(memberRequestDTO.getPassword())
+                .teamGroup(teamGroup)
                 .build();
 
         //saved to repository
@@ -28,11 +35,15 @@ public class MemberService {
         return MemberResponseDTO.builder()
                 .id(savedMember.getId())
                 .username(savedMember.getUsername())
+                .teamGroup(teamGroup)
                 .build();
     }
 
     //ID로 사용자 조회
-    public MemberResponseDTO findMemberById(Long id) {
+    public MemberResponseDTO findMemberById(Long id,String groupKey) {
+        TeamGroup teamGroup = groupRepository.findByGroupKey(groupKey)
+                .orElseThrow(() -> new RuntimeException("그룹키가 없습니다."));
+
         Member member = memberRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("사용자 조회를 할 수 없습니다."));
 
@@ -43,7 +54,10 @@ public class MemberService {
     }
 
     //Username으로 사용자 조회
-    public MemberResponseDTO getMemberByUsername(String username) {
+    public MemberResponseDTO getMemberByUsername(String username, String groupKey) {
+        TeamGroup teamGroup = groupRepository.findByGroupKey(groupKey)
+                .orElseThrow(() -> new RuntimeException("그룹키가 없습니다."));
+
         Member member = memberRepository.findByUsername(username)
                 .orElseThrow(() -> new RuntimeException("사용자 조회를 할 수 없습니다."));
 

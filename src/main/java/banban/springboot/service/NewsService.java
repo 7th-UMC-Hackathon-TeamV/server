@@ -10,7 +10,6 @@ import banban.springboot.repository.NewsRepository;
 import banban.springboot.web.dto.request.NewsRequestDTO;
 import banban.springboot.web.dto.response.NewsResponseDTO;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -52,4 +51,5 @@ public class NewsService {
 
         return newsRepository.save(existNews);
     }
+
 }
