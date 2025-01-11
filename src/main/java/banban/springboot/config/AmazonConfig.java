@@ -27,14 +27,16 @@ public class AmazonConfig {
     @Value("${cloud.aws.region.static}")
     private String region;
 
-    @Value(("${cloud.aws.s3.bucket}"))
+    @Value("${cloud.aws.s3.bucket}")
     private String bucket;
 
     @Value("${cloud.aws.s3.path.news}")
     private String newsPath;
 
     @PostConstruct
-    public void init() {this.awsCredentials = new BasicAWSCredentials(accessKey, secretKey);}
+    public void init() {
+        this.awsCredentials = new BasicAWSCredentials(accessKey, secretKey);
+    }
 
     @Bean
     public AmazonS3 amazonS3() {
@@ -47,6 +49,7 @@ public class AmazonConfig {
     }
 
     @Bean
-    public AWSCredentialsProvider awsCredentialsProvider() {return new AWSStaticCredentialsProvider(awsCredentials);}
-
+    public AWSCredentialsProvider awsCredentialsProvider() {
+        return new AWSStaticCredentialsProvider(awsCredentials);
+    }
 }

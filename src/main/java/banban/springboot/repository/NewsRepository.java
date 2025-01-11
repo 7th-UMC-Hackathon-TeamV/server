@@ -9,7 +9,6 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -28,10 +27,5 @@ public interface NewsRepository extends JpaRepository<News,Long> {
 
     // 특정 그룹의 일반 뉴스 조회
     List<News> findByTeamGroupAndIsBreakingNewsFalse(TeamGroup teamGroup);
-
-    List<News> findByTeamGroupAndCreatedAtBetween(TeamGroup teamGroup, LocalDateTime start, LocalDateTime end);
-    void deleteByCreatedAtBefore(LocalDateTime dateTime);
-
-
 }
 
