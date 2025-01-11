@@ -47,7 +47,6 @@ public class News {
     @Column(nullable = false)
     private boolean isBreakingNews;
 
-    @Column(nullable = false)
-    private LocalDateTime createdAt = LocalDateTime.now();
+    private LocalDateTime createdAt;
 
 }

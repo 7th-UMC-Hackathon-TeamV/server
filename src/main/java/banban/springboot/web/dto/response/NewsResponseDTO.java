@@ -4,6 +4,7 @@ import banban.springboot.domain.entity.News;
 import lombok.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 
@@ -20,6 +21,7 @@ public class NewsResponseDTO {
         private String content;
         private String images;
         private boolean isBreakingNews;
+        private LocalDateTime createdAt;
 
         public static NewsCreateResponseDTO from(News news) {
             return NewsCreateResponseDTO.builder()
@@ -28,6 +30,7 @@ public class NewsResponseDTO {
                     .content(news.getContent())
                     .isBreakingNews(news.isBreakingNews())
                     .images(news.getThumbnail_URL())
+                    .createdAt(news.getCreatedAt())
                     .build();
         }
     }
@@ -53,6 +56,57 @@ public class NewsResponseDTO {
                     .username(news.getMember().getUsername())
                     .isBreakingNews(news.isBreakingNews())
                     .images(news.getThumbnail_URL())
+                    .build();
+        }
+    }
+
+
+    @Getter
+    @Setter
+    @NoArgsConstructor
+    @Builder
+    @AllArgsConstructor
+    public static class NewsTodayResponseDTO {
+        private Long newsId;
+        private String headline;
+        private String content;
+        private boolean isBreakingNews;
+        private int likes;
+        private LocalDateTime createdAt;
+
+        public static NewsTodayResponseDTO from(News news) {
+            return NewsTodayResponseDTO.builder()
+                    .newsId(news.getId())
+                    .headline(news.getHeadline())
+                    .content(news.getContent())
+                    .isBreakingNews(news.isBreakingNews())
+                    .likes(news.getLikes())
+                    .createdAt(news.getCreatedAt())
+                    .build();
+        }
+    }
+
+    @Getter
+    @Setter
+    @NoArgsConstructor
+    @Builder
+    @AllArgsConstructor
+    public static class NewsYesterdayResponseDTO {
+        private Long newsId;
+        private String headline;
+        private String content;
+        private boolean isBreakingNews;
+        private int likes;
+        private LocalDateTime createdAt;
+
+        public static NewsYesterdayResponseDTO from(News news) {
+            return NewsYesterdayResponseDTO.builder()
+                    .newsId(news.getId())
+                    .headline(news.getHeadline())
+                    .content(news.getContent())
+                    .isBreakingNews(news.isBreakingNews())
+                    .likes(news.getLikes())
+                    .createdAt(news.getCreatedAt())
                     .build();
         }
     }
