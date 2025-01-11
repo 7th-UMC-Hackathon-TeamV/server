@@ -59,4 +59,15 @@ public class NewsService {
         return newsRepository.save(existNews);
     }
 
+    @Transactional
+    public NewsResponseDTO.NewsReadResponseDTO readNews(String groupKey, Long newsId) {
+
+        TeamGroup teamGroup = groupRepository.findByGroupKey(groupKey)
+                .orElseThrow(() -> new GeneralException(ErrorStatus.TEAMGROUP_NOT_FOUND));
+
+        News news = newsRepository.findByTeamGroupAndId(teamGroup, newsId)
+                .orElseThrow(() -> new GeneralException(ErrorStatus.NEWS_NOT_EXIST_FOUND));
+
+        return NewsResponseDTO.NewsReadResponseDTO.from(news);
+    }
 }
