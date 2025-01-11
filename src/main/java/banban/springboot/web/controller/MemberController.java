@@ -1,5 +1,6 @@
 package banban.springboot.web.controller;
 
+import banban.springboot.apiPayload.ApiResponse;
 import banban.springboot.service.MemberService;
 import banban.springboot.web.dto.request.MemberRequestDTO;
 import banban.springboot.web.dto.response.MemberResponseDTO;
@@ -19,28 +20,28 @@ public class MemberController {
     /**
      * 사용자 생성 API
      */
-    @PostMapping
-    public ResponseEntity<MemberResponseDTO> createUser(@RequestBody @Valid MemberRequestDTO memberRequestDTO) {
+    @PostMapping("/users/login")
+    public ApiResponse<MemberResponseDTO> createUser(@RequestBody @Valid MemberRequestDTO memberRequestDTO) {
         MemberResponseDTO MemberResponseDTO = memberService.createUser(memberRequestDTO);
-        return ResponseEntity.status(HttpStatus.CREATED).body(MemberResponseDTO);
+        return ApiResponse.onSuccess(MemberResponseDTO);
     }
 
     /**
      * ID로 사용자 조회 API
      */
-    @GetMapping("/{id}")
-    public ResponseEntity<MemberResponseDTO> getUserById(@PathVariable Long id) {
-        MemberResponseDTO MemberResponseDTO = memberService.findMemberById(id);
-        return ResponseEntity.ok(MemberResponseDTO);
+    @GetMapping("/users/login/{memberId}")
+    public ApiResponse<MemberResponseDTO> getUserById(@PathVariable Long memberId) {
+        MemberResponseDTO MemberResponseDTO = memberService.findMemberById(memberId);
+        return ApiResponse.onSuccess(MemberResponseDTO);
     }
 
     /**
      * Username으로 사용자 조회 API
      */
-    @GetMapping("/by-username")
-    public ResponseEntity<MemberResponseDTO> getUserByUsername(@RequestParam String username) {
+    @GetMapping("/users/login/username")
+    public ApiResponse<MemberResponseDTO> getUserByUsername(@RequestParam String username) {
         MemberResponseDTO MemberResponseDTO = memberService.getMemberByUsername(username);
-        return ResponseEntity.ok(MemberResponseDTO);
+        return ApiResponse.onSuccess(MemberResponseDTO);
     }
 }
 
