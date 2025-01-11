@@ -46,4 +46,19 @@ public class NewsController {
 
         return ApiResponse.onSuccess(null);
     }
+
+    // 뉴스 상세 보기
+    @GetMapping("/{groupKey}/news/{newsId}")
+    @Operation(summary = "뉴스 상세 보기 API",description = "뉴스 상세 보는 API입니다.")
+    @ApiResponses({
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "COMMON200",description = "OK, 성공"),
+    })
+    @Parameters({
+            @Parameter(name = "groupKey", description = "그룹키, path variable 입니다!"),
+            @Parameter(name = "newsId", description = "뉴스글의 ID, path variable 입니다!"),
+    })
+    public ApiResponse<NewsResponseDTO.NewsReadResponseDTO> createNews(@PathVariable("groupKey") String groupKey, @PathVariable("newsId") Long newsId) {
+        NewsResponseDTO.NewsReadResponseDTO news = newsService.readNews(groupKey, newsId);
+        return ApiResponse.onSuccess(news);
+    }
 }

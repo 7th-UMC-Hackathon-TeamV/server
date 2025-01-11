@@ -30,4 +30,27 @@ public class NewsResponseDTO {
                     .build();
         }
     }
+
+    @Getter
+    @Setter
+    @NoArgsConstructor
+    @Builder
+    @AllArgsConstructor
+    public static class NewsReadResponseDTO {
+        private Long newsId;
+        private String headline;
+        private String content;
+        private String username;
+        private boolean isBreakingNews;
+
+        public static NewsReadResponseDTO from(News news) {
+            return NewsReadResponseDTO.builder()
+                    .newsId(news.getId())
+                    .headline(news.getHeadline())
+                    .content(news.getContent())
+                    .username(news.getMember().getUsername())
+                    .isBreakingNews(news.isBreakingNews())
+                    .build();
+        }
+    }
 }
