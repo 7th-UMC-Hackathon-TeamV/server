@@ -1,6 +1,7 @@
 package banban.springboot.web.dto.response;
 
 import banban.springboot.domain.entity.News;
+import banban.springboot.domain.enums.NewsCategories;
 import lombok.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -22,6 +23,7 @@ public class NewsResponseDTO {
         private LocalDateTime createdAt;
         //private List<MultipartFile> images;
         private boolean isBreakingNews;
+        private NewsCategories newsCategories;
 
         public static NewsCreateResponseDTO from(News news) {
             return NewsCreateResponseDTO.builder()
@@ -30,6 +32,7 @@ public class NewsResponseDTO {
                     .content(news.getContent())
                     .isBreakingNews(news.isBreakingNews())
                     .createdAt(news.getCreatedAt())
+                    .newsCategories(news.getNewsCategories())
                     .build();
         }
     }
@@ -46,6 +49,7 @@ public class NewsResponseDTO {
         private boolean isBreakingNews;
         private int likes;
         private LocalDateTime createdAt;
+        private NewsCategories newsCategories;
 
         public static NewsTodayResponseDTO from(News news) {
             return NewsTodayResponseDTO.builder()
@@ -55,6 +59,7 @@ public class NewsResponseDTO {
                     .isBreakingNews(news.isBreakingNews())
                     .likes(news.getLikes())
                     .createdAt(news.getCreatedAt())
+                    .newsCategories(news.getNewsCategories())
                     .build();
         }
     }
@@ -71,6 +76,7 @@ public class NewsResponseDTO {
         private boolean isBreakingNews;
         private int likes;
         private LocalDateTime createdAt;
+        private NewsCategories newsCategories;
 
         public static NewsYesterdayResponseDTO from(News news) {
             return NewsYesterdayResponseDTO.builder()
@@ -79,6 +85,7 @@ public class NewsResponseDTO {
                     .content(news.getContent())
                     .isBreakingNews(news.isBreakingNews())
                     .likes(news.getLikes())
+                    .newsCategories(news.getNewsCategories())
                     .createdAt(news.getCreatedAt())
                     .build();
         }
@@ -94,6 +101,7 @@ public class NewsResponseDTO {
         private String headline;
         private String content;
         private String username;
+        private NewsCategories newsCategories;
         private boolean isBreakingNews;
 
         public static NewsReadResponseDTO from(News news) {
@@ -103,6 +111,7 @@ public class NewsResponseDTO {
                     .content(news.getContent())
                     .username(news.getMember().getUsername())
                     .isBreakingNews(news.isBreakingNews())
+                    .newsCategories(news.getNewsCategories())
                     .build();
         }
     }
