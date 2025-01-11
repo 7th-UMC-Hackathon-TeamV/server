@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserResponseDTO {
-    private String userId;
-    private String password;
+public class MemberResponseDTO {
+    private Long id;
+    private String username;
 }
