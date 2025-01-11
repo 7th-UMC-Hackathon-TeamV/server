@@ -4,11 +4,13 @@ import banban.springboot.domain.entity.Member;
 import banban.springboot.domain.entity.TeamGroup;
 import banban.springboot.repository.GroupRepository;
 import banban.springboot.repository.MemberRepository;
+import banban.springboot.repository.NewsRepository;
 import banban.springboot.web.dto.request.MemberRequestDTO;
 import banban.springboot.web.dto.response.MemberResponseDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -16,6 +18,7 @@ import java.util.Optional;
 public class MemberService {
     private final MemberRepository memberRepository;
     private final GroupRepository groupRepository;
+    private final NewsRepository newsRepository;
 
     public MemberResponseDTO createUser(MemberRequestDTO memberRequestDTO, String groupKey) {
         TeamGroup teamGroup = groupRepository.findByGroupKey(groupKey)
@@ -68,4 +71,27 @@ public class MemberService {
                 .teamGroup(teamGroup)
                 .build();
     }
+
+    /**
+     * 뉴스를 작성한 사용자 목록 조회
+     */
+    public List<MemberResponseDTO> getMembersWhoPostedNews(String groupKey) {
+
+        TeamGroup teamGroup = groupRepository.findByGroupKey(groupKey)
+                .orElseThrow(() -> new RuntimeException("그룹키가 없습니다."));
+
+
+        // 뉴스 작성자 중복 없이 조회
+        List<Member> members = newsRepository.findDistinctMembersByGroupKey(groupKey);
+
+        // List Member -> MemberResponseDTO 변환
+        return members.stream()
+                .map(member -> MemberResponseDTO.builder()
+                        .id(member.getId())
+                        .username(member.getUsername())
+                        .teamGroup(member.getTeamGroup())
+                        .build())
+                .toList();
+    }
+
 }
