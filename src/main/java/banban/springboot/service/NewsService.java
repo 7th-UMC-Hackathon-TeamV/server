@@ -5,6 +5,8 @@ import banban.springboot.apiPayload.exception.GeneralException;
 import banban.springboot.apiPayload.exception.handler.NewsHandler;
 import banban.springboot.domain.entity.Member;
 import banban.springboot.domain.entity.News;
+import banban.springboot.domain.entity.TeamGroup;
+import banban.springboot.repository.GroupRepository;
 import banban.springboot.repository.MemberRepository;
 import banban.springboot.repository.NewsRepository;
 import banban.springboot.web.dto.request.NewsRequestDTO;
@@ -20,15 +22,20 @@ import org.springframework.transaction.annotation.Transactional;
 public class NewsService {
     private final NewsRepository newsRepository;
     private final MemberRepository memberRepository;
+    private final GroupRepository groupRepository;
 
     @Transactional
-    public NewsResponseDTO.NewsCreateResponseDTO createNews(Long groupId, Long memberId, NewsRequestDTO newsRequestDTO) {
+    public NewsResponseDTO.NewsCreateResponseDTO createNews(String groupKey, Long memberId, NewsRequestDTO newsRequestDTO) {
+
+        TeamGroup teamGroup = groupRepository.findByGroupKey(groupKey)
+                .orElseThrow(() -> new GeneralException(ErrorStatus.TEAMGROUP_NOT_FOUND));
 
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new GeneralException(ErrorStatus.MEMBER_NOT_FOUND));
 
         News news = News.builder()
 
+                .teamGroup(teamGroup)
                 .member(member)
                 .headline(newsRequestDTO.getHeadline())
                 .content(newsRequestDTO.getContent())

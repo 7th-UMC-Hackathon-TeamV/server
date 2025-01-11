@@ -26,9 +26,9 @@ public class NewsController {
     private final NewsService newsService;
 
     @Operation(summary = "뉴스 생성")
-    @PostMapping("/{groupId}/users/news/{memberId}")
-    public ApiResponse<NewsResponseDTO.NewsCreateResponseDTO> createNews(@PathVariable Long groupId, @PathVariable Long memberId, @Valid @RequestBody NewsRequestDTO newsRequestDTO) {
-        NewsResponseDTO.NewsCreateResponseDTO news = newsService.createNews(groupId, memberId, newsRequestDTO);
+    @PostMapping("/{groupKey}/users/news/{memberId}")
+    public ApiResponse<NewsResponseDTO.NewsCreateResponseDTO> createNews(@PathVariable String groupKey, @PathVariable Long memberId, @Valid @RequestBody NewsRequestDTO newsRequestDTO) {
+        NewsResponseDTO.NewsCreateResponseDTO news = newsService.createNews(groupKey, memberId, newsRequestDTO);
         return ApiResponse.onSuccess(news);
     }
     // 뉴스 공감 누르기
