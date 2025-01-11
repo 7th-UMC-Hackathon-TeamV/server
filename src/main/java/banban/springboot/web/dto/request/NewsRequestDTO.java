@@ -16,14 +16,14 @@ import java.util.List;
 @Setter
 public class NewsRequestDTO {
     @NotBlank
-    @Size(max = 30, message = "뉴스 헤드라인은 최대 30자입니다.")
+    @Size(max = 20, message = "뉴스 헤드라인은 최대 20자입니다.")
     private String headline;
 
     @NotBlank
     @Size(max = 1000, message = "뉴스 본문은 최대 1000자입니다.")
     private String content;
 
-    private List<MultipartFile> images; // 사용자가 업로드한 이미지
+    //private List<MultipartFile> images; // 사용자가 업로드한 이미지
 
     private boolean isBreakingNews; // 속보 여부
 
