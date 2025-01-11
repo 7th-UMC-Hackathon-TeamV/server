@@ -30,6 +30,6 @@ public interface NewsRepository extends JpaRepository<News,Long> {
     List<News> findByTeamGroupAndIsBreakingNewsFalse(TeamGroup teamGroup);
 
     List<News> findByTeamGroupAndCreatedAtBetween(TeamGroup teamGroup, LocalDateTime start, LocalDateTime end);
-    void deleteByCreatedAtBefore(LocalDateTime dateTime);
+    void deleteByCreatedAtBetween(LocalDateTime start, LocalDateTime end);
 }
 
