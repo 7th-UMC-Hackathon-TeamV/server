@@ -144,6 +144,17 @@ public class NewsService {
                 .toList();
     }
 
+//    private LocalDateTime getCurrentTime() {
+//        if (isTestMode()) {
+//            return NewsTestController.getMockCurrentTime();
+//        }
+//        return LocalDateTime.now();
+//    }
+
+//    private boolean isTestMode() {
+//        return Arrays.asList(environment.getActiveProfiles()).contains("test");
+//    }
+
     private LocalDateTime getCurrentTime() {
         return NewsTestController.getMockCurrentTime();  // 항상 테스트 시간 반환
     }
@@ -180,7 +191,7 @@ public class NewsService {
 
         //LocalDateTime now = LocalDateTime.now();
         LocalDateTime now = getCurrentTime();
-        LocalDateTime twoYesterdayAt6PM = now.minusDays(2).withHour(18).withMinute(0).withSecond(0);
+        LocalDateTime twoYesterdayAt6PM = now.minusDays(1).withHour(00).withMinute(0).withSecond(0);
         LocalDateTime yesterdayAt6PM = now.minusDays(1).withHour(17).withMinute(59).withSecond(59);
 
         List<News> yesterdayNews = newsRepository.findByTeamGroupAndCreatedAtBetween(
@@ -195,9 +206,11 @@ public class NewsService {
     @Transactional
     public void deleteOldNews() {
         LocalDateTime now = getCurrentTime(); // 수정된 부분
-        LocalDateTime yesterdayAt6PM = now.minusDays(1)
-                .withHour(18).withMinute(0).withSecond(0);
-        newsRepository.deleteByCreatedAtBefore(yesterdayAt6PM);
+//        LocalDateTime yesterdayAt6PM = now.minusDays(1)
+//                .withHour(18).withMinute(0).withSecond(0);
+        LocalDateTime twoYesterdayAt6PM = now.minusDays(1).withHour(00).withMinute(0).withSecond(0);
+        LocalDateTime yesterdayAt6PM = now.minusDays(1).withHour(17).withMinute(59).withSecond(59);
+        newsRepository.deleteByCreatedAtBetween(twoYesterdayAt6PM, yesterdayAt6PM);
     }
 
     /***
