@@ -61,4 +61,20 @@ public class NewsController {
         NewsResponseDTO.NewsReadResponseDTO news = newsService.readNews(groupKey, newsId);
         return ApiResponse.onSuccess(news);
     }
+
+    // 내가 작성한 뉴스 삭제
+    @DeleteMapping("/{groupKey}/users/news/{memberId}/{newsId}")
+    @Operation(summary = "내가 작성한 뉴스 삭제하기 API",description = "내가 작성한 뉴스 삭제하는 API입니다.")
+    @ApiResponses({
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "COMMON200",description = "OK, 성공"),
+    })
+    @Parameters({
+            @Parameter(name = "groupKey", description = "그룹키, path variable 입니다!"),
+            @Parameter(name = "memberId", description = "사용자의 ID, path variable 입니다!"),
+            @Parameter(name = "newsId", description = "뉴스글의 ID, path variable 입니다!"),
+    })
+    public ApiResponse<Void> deleteNews(@PathVariable("groupKey") String groupKey, @PathVariable("memberId") Long memberId, @PathVariable("newsId") Long newsId) {
+        newsService.removeNews(groupKey, memberId, newsId);
+        return ApiResponse.onSuccess(null);
+    }
 }
